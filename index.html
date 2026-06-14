@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nusantara Explorers Leaderboard</title>
+    <!-- Import Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* === THEME: Modern Digital Scrapbook + Y2K === */
+        :root {
+            --bg-base: #EEE0CC;
+            --green-forest: #607456;
+            --red-bold: #7B2525;
+            --orange-clay: #BA6A4C;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            font-family: 'Poppins', Helvetica, sans-serif;
+            color: var(--red-bold);
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* === HEADER Y2K STYLE === */
+        .header {
+            text-align: center;
+            border: 4px dashed var(--green-forest);
+            padding: 20px;
+            margin-bottom: 30px;
+            background-color: white;
+            /* Efek bayangan kasar ala Y2K/Scrapbook */
+            box-shadow: 8px 8px 0px var(--orange-clay);
+            /* Dimiringin dikit biar estetik */
+            transform: rotate(-1deg);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--green-forest);
+        }
+
+        #leaderboard-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header UI -->
+    <div class="header">
+        <h1>Nusantara Explorers</h1>
+        <div class="subtitle">Braving the Wild, Mastering the Art-venture</div>
+    </div>
+
+    <!-- Tempat Data Akan Muncul -->
+    <div id="leaderboard-container">
+        <h2>Loading data dari satelit OSIS... 📡</h2>
+    </div>
+
+    <!-- Logic API (Pipa Data) -->
+    <script>
+        // TODO: Ganti teks di bawah ini pake URL SAKTI Apps Script lu!
+        const API_URL = "https://script.google.com/macros/s/AKfycbxQx7O1e3cptTtNFlnGKRA5fs_RC0Pi3pBdW833RlBXoDs8miVhYjo4ywC0ylrjXxu2cw/exec";
+
+        async function fetchData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                console.log("Data berhasil ditarik!", data);
+                
+                document.getElementById("leaderboard-container").innerHTML = "<h2>Data berhasil masuk! API lu aman. ✅</h2>";
+
+            } catch (error) {
+                console.error("Waduh, error narik data:", error);
+                document.getElementById("leaderboard-container").innerHTML = "<h2>Gagal narik data. Cek koneksi API lu! ❌</h2>";
+            }
+        }
+
+        // Jalanin fungsi pas web dibuka
+        fetchData();
+    </script>
+</body>
+</html>
