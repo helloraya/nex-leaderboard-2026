@@ -1,6 +1,6 @@
 // --- 1. DATA DARI GOOGLE SHEETS (API) ---
 // Masukin URL hasil Deploy dari Google Apps Script lo ke dalam tanda kutip di bawah:
-const GAS_URL = 'https://docs.google.com/spreadsheets/d/1SUEQgvnrJTJjqSXG9GkZdFn_h_HntJ5l9KhTEpVtyhc/edit?usp=sharing';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4wFlZj816RRjcX9xmQrzjhQv-Hte_kOyi1j1rpQvM-goLSoZA5WfFkXK_7kI5uHXnmg/exec';
 
 // Variabel ini disiapin kosong dulu, nanti otomatis keisi sama data dari Sheets
 let mockData = {}; 
