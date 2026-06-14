@@ -1,0 +1,96 @@
+/* Color Palette Config */
+:root {
+  --base-color: #EEE0CC;
+  --forest: #607456;
+  --red: #7B2525;
+  --orange: #BA6A4C;
+}
+
+body { background-color: var(--base-color); }
+.text-forest { color: var(--forest); }
+.bg-forest { background-color: var(--forest); }
+.border-forest { border-color: var(--forest); }
+.text-red { color: var(--red); }
+.bg-red { background-color: var(--red); }
+.border-red { border-color: var(--red); }
+.text-orange { color: var(--orange); }
+.bg-orange { background-color: var(--orange); }
+.border-orange { border-color: var(--orange); }
+
+/* Neo-Brutalism / Scrapbook Shadow */
+.scrapbook-shadow {
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.8);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.scrapbook-shadow:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.8);
+}
+
+/* Y2K Typography Strokes */
+.y2k-stroke {
+  -webkit-text-stroke: 1.5px black;
+}
+
+/* Hide / Show Utilities */
+.hidden { display: none !important; }
+
+/* Washi Tape Effect */
+.washi-tape {
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  mix-blend-mode: multiply;
+}
+
+/* Card Ranks */
+.card-rank-1 {
+  animation: pulse-glow 2s infinite;
+  border-color: var(--orange);
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 5px var(--orange), 6px 6px 0px rgba(0,0,0,0.8); }
+  50% { box-shadow: 0 0 20px var(--orange), 6px 6px 0px rgba(0,0,0,0.8); }
+  100% { box-shadow: 0 0 5px var(--orange), 6px 6px 0px rgba(0,0,0,0.8); }
+}
+
+/* Floating Stickers */
+.sticker {
+  position: absolute;
+  font-size: 2rem;
+  user-select: none;
+  z-index: 0;
+  opacity: 0.8;
+}
+.float-anim { animation: floating 4s ease-in-out infinite; }
+.delay-1 { animation-delay: 0s; }
+.delay-2 { animation-delay: 1.5s; }
+.delay-3 { animation-delay: 3s; }
+
+@keyframes floating {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(10deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Typewriter Cursor */
+#typewriter-text::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Wood Board Pixelated Effect */
+.wood-board {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.05) 0px,
+    rgba(0,0,0,0.05) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+
+/* Progress Bar Smoothness */
+.progress-bar-fill {
+  transition: width 1s ease-in-out;
+}
