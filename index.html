@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nusantara Explorers Leaderboard</title>
-    <!-- Import Font Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* === THEME: Modern Digital Scrapbook + Y2K === */
+        /* === TEMA & WARNA === */
         :root {
             --bg-base: #EEE0CC;
             --green-forest: #607456;
@@ -17,79 +16,252 @@
 
         body {
             background-color: var(--bg-base);
-            font-family: 'Poppins', Helvetica, sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: var(--red-bold);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             overflow-x: hidden;
+            background-image: radial-gradient(var(--orange-clay) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        /* === HEADER Y2K STYLE === */
-        .header {
+        /* === ANIMASI Y2K === */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(-2deg); }
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(186, 106, 76, 0.7); }
+            70% { box-shadow: 0 0 20px 10px rgba(186, 106, 76, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(186, 106, 76, 0); }
+        }
+
+        /* === HEADER === */
+        .header-container {
             text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px auto;
+            background: #fff;
             border: 4px dashed var(--green-forest);
             padding: 20px;
-            margin-bottom: 30px;
-            background-color: white;
-            /* Efek bayangan kasar ala Y2K/Scrapbook */
-            box-shadow: 8px 8px 0px var(--orange-clay);
-            /* Dimiringin dikit biar estetik */
+            box-shadow: 10px 10px 0px var(--orange-clay);
             transform: rotate(-1deg);
+            animation: float 6s ease-in-out infinite;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin: 0;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
+            color: var(--red-bold);
+            text-shadow: 3px 3px 0px rgba(123, 37, 37, 0.2);
         }
 
         .subtitle {
             font-size: 1.2rem;
-            font-weight: bold;
+            font-weight: 600;
             color: var(--green-forest);
+            background: #EEE0CC;
+            display: inline-block;
+            padding: 5px 15px;
+            margin-top: 10px;
+            border: 2px solid var(--green-forest);
+            transform: rotate(2deg);
         }
 
-        #leaderboard-container {
+        /* === LEADERBOARD GRID === */
+        #leaderboard-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* === KARTU KELAS (SCRAPBOOK STYLE) === */
+        .class-card {
+            background: white;
+            border: 3px solid var(--red-bold);
+            width: 320px;
+            padding: 20px;
+            box-shadow: 8px 8px 0px var(--green-forest);
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .class-card:hover {
+            transform: scale(1.05) rotate(1deg);
+            z-index: 10;
+        }
+
+        /* Pita Selotip di atas kartu */
+        .class-card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            width: 100px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        /* Spesial buat Rank 1 */
+        .rank-1 {
+            border-color: var(--orange-clay);
+            box-shadow: 8px 8px 0px var(--orange-clay);
+            animation: pulse-glow 2s infinite;
+        }
+        
+        .rank-badge {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: var(--red-bold);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            border: 3px solid white;
+            box-shadow: 3px 3px 0px var(--green-forest);
+        }
+
+        .class-name {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 10px 0 5px 0;
+            color: var(--green-forest);
+            text-transform: uppercase;
+        }
+
+        .squad-name {
+            font-size: 1rem;
+            color: var(--orange-clay);
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .points-display {
+            font-size: 2.5rem;
+            font-weight: 800;
             text-align: center;
-            margin-top: 50px;
+            background: var(--bg-base);
+            border: 2px dashed var(--red-bold);
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* === PROGRESS BAR === */
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border: 2px solid var(--green-forest);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--orange-clay);
+            width: 0%; /* Diatur via JS */
+            transition: width 1s ease-in-out;
+        }
+
+        .loading-text {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            animation: float 2s ease-in-out infinite;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header UI -->
-    <div class="header">
+    <!-- Header / Judul TV -->
+    <div class="header-container">
         <h1>Nusantara Explorers</h1>
         <div class="subtitle">Braving the Wild, Mastering the Art-venture</div>
     </div>
 
-    <!-- Tempat Data Akan Muncul -->
-    <div id="leaderboard-container">
-        <h2>Loading data dari satelit OSIS... 📡</h2>
+    <!-- Tempat Kartu Kelas Muncul -->
+    <div id="leaderboard-grid">
+        <div class="loading-text">Loading ... 📡</div>
     </div>
 
-    <!-- Logic API (Pipa Data) -->
     <script>
-        // TODO: Ganti teks di bawah ini pake URL SAKTI Apps Script lu!
+        // MASUKIN URL SAKTI LU DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbxQx7O1e3cptTtNFlnGKRA5fs_RC0Pi3pBdW833RlBXoDs8miVhYjo4ywC0ylrjXxu2cw/exec";
 
-        async function fetchData() {
+        async function fetchLeaderboard() {
             try {
                 const response = await fetch(API_URL);
                 const data = await response.json();
-                console.log("Data berhasil ditarik!", data);
                 
-                document.getElementById("leaderboard-container").innerHTML = "<h2>Data berhasil masuk! API lu aman. ✅</h2>";
+                // Ambil data dari sheet GLOBAL_LEADERBOARD
+                let classes = data.GLOBAL_LEADERBOARD;
+
+                // Sorting dari poin terbesar ke terkecil
+                classes.sort((a, b) => b['Total Poin'] - a['Total Poin']);
+
+                const grid = document.getElementById("leaderboard-grid");
+                grid.innerHTML = ""; // Bersihin tulisan loading
+
+                // Cari poin tertinggi buat patokan Progress Bar (Maksimal)
+                const maxPoints = classes[0]['Total Poin'] > 0 ? classes[0]['Total Poin'] : 100;
+
+                // Looping bikin kartu buat tiap kelas
+                classes.forEach((kls, index) => {
+                    const rank = index + 1;
+                    const isRank1 = rank === 1 ? "rank-1" : "";
+                    const percentage = (kls['Total Poin'] / maxPoints) * 100;
+
+                    // Struktur HTML per kartu
+                    const cardHTML = `
+                        <div class="class-card ${isRank1}">
+                            <div class="rank-badge">#${rank}</div>
+                            <div class="class-name">${kls['Kelas']}</div>
+                            <div class="squad-name">${kls['Nama Pasukan']}</div>
+                            
+                            <div class="points-display">
+                                ${kls['Total Poin']} <span style="font-size:1rem;">PTS</span>
+                            </div>
+
+                            <div style="font-size:0.8rem; margin-bottom:5px; font-weight:bold;">Progress:</div>
+                            <div class="progress-container">
+                                <div class="progress-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHTML;
+                });
 
             } catch (error) {
-                console.error("Waduh, error narik data:", error);
-                document.getElementById("leaderboard-container").innerHTML = "<h2>Gagal narik data. Cek koneksi API lu! ❌</h2>";
+                console.error("Error:", error);
+                document.getElementById("leaderboard-grid").innerHTML = 
+                    "<h2 style='color:red; text-align:center;'>Gagal narik data. Cek URL lu! ❌</h2>";
             }
         }
 
-        // Jalanin fungsi pas web dibuka
-        fetchData();
+        // Panggil fungsinya
+        fetchLeaderboard();
+        
+        // Auto-refresh tiap 30 detik biar di TV jalan sendiri
+        setInterval(fetchLeaderboard, 30000); 
     </script>
 </body>
 </html>
