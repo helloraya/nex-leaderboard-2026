@@ -246,10 +246,3 @@ function startPolaroidSlideshow() {
     }, 500); // Wait for fade out to complete
   }, 6000); // Ganti setiap 6 detik
 }
-
-// --- INIT ---
-window.onload = () => {
-  renderLeaderboard();
-  startTypewriter();
-  startPolaroidSlideshow();
-};
