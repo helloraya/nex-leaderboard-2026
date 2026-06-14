@@ -38,27 +38,21 @@ function renderLeaderboard() {
   const container = document.getElementById('leaderboard-container');
   container.innerHTML = '';
   
-  // Sort by points
-  const sortedClasses = [...mockData.classes].sort((a, b) => b.points - a.points);
-  const maxPoints = sortedClasses[0].points;
+  // Ambil data langsung dari key hasil looping GAS (GLOBAL_LEADERBOARD)
+  const sortedClasses = [...mockData.GLOBAL_LEADERBOARD].sort((a, b) => b.Points - a.Points);
 
   sortedClasses.forEach((cls, index) => {
-    const isRank1 = index === 0 ? 'card-rank-1' : '';
-    const progressWidth = (cls.points / 500) * 100; // Asumsi max 500 pts dlm progress bar
-    
+    // PASTIIN NAMA KOLOM DI SHEETS LO PERSIS SAMA (Case sensitive!)
+    // Misal di Sheet kolomnya "Name", "Points", "Logo"
     const cardHTML = `
-      <div class="bg-white border-4 border-forest scrapbook-shadow p-4 cursor-pointer relative ${isRank1} hover:bg-orange/10" onclick="openClassModal('${cls.name}')">
-        ${index === 0 ? '<div class="absolute -top-4 -right-4 text-3xl z-10" title="MVP of the Wild">👑</div>' : ''}
+      <div class="bg-white border-4 border-forest scrapbook-shadow p-4 cursor-pointer relative hover:bg-orange/10" onclick="openClassModal('${cls.Name}')">
         <div class="flex items-center gap-4">
           <div class="text-4xl font-bold text-red border-r-2 border-dashed border-gray-300 pr-4">#${index + 1}</div>
-          <div class="text-3xl">${cls.logo}</div>
+          <div class="text-3xl">${cls.Logo}</div>
           <div class="flex-1">
-            <h3 class="text-xl font-extrabold text-forest uppercase">${cls.name}</h3>
-            <div class="text-sm font-helvetica text-gray-600">Total Points: <span class="font-bold text-orange">${cls.points}</span></div>
+            <h3 class="text-xl font-extrabold text-forest uppercase">${cls.Name}</h3>
+            <div class="text-sm font-helvetica text-gray-600">Total Points: <span class="font-bold text-orange">${cls.Points}</span></div>
           </div>
-        </div>
-        <div class="w-full bg-gray-200 h-3 mt-3 border border-forest">
-          <div class="bg-red h-full progress-bar-fill" style="width: ${progressWidth > 100 ? 100 : progressWidth}%"></div>
         </div>
       </div>
     `;
