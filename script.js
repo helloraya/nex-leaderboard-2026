@@ -1,45 +1,36 @@
-// --- 1. MOCK DATA (Simulasi JSON dari Google Apps Script) ---
-const mockData = {
-  classes: [
-    { id: '7A', name: '7A Imogiri', points: 450, logo: '🏕️' },
-    { id: '7B', name: '7B Indrakila', points: 380, logo: '🔥' },
-    { id: '7C', name: '7C Inerie', points: 320, logo: '🦅' },
-    { id: '8A', name: '8A Nania', points: 480, logo: '⚡' },
-    { id: '8B', name: '8B Nemberala', points: 410, logo: '🌊' },
-    { id: '8C', name: '8C Narmada', points: 290, logo: '🍃' }
-  ],
-  roster: {
-    '8A Nania': { 
-      Futsal: ['Budi (C)', 'Andi', 'Reno', 'Tono', 'Doni', '+3 Cadangan'], 
-      Voli: ['Siti', 'Rara', 'Maya', 'Dina', 'Lina', 'Putri'], // 6 pemain
-      Kasti: [], // Trigger 'MASSIVE DEPLOYMENT'
-      MLBB: ['Faker', 'Lemon', 'Oura', 'Jess', 'R7']
-    }
-    // Asumsi data kelas lain ada di sini dari Google Sheets
-  },
-  matchHistory: {
-    '8A Nania': [
-      { sport: 'Futsal', vs: '7B Indrakila', result: 'WIN', score: '3-1', points: '+50' },
-      { sport: 'MLBB', vs: '8C Narmada', result: 'WIN', score: '2-0', points: '+50' }
-    ]
-  },
-  supporterLogs: [
-    "[10:00] 8A Nania: Best Choreography! +15 Pts 🕺",
-    "[10:30] 7C Inerie: Vocab check yel-yel epic! +10 Pts 🗣️",
-    "[11:15] 7B Indrakila: Bersihin area tribun. +15 Pts 🧹",
-    "[13:00] 8B Nemberala: Semangat over 9000! +5 Pts 🔥"
-  ],
-  schedules: {
-    'Futsal': ['08:00 - 7A vs 8A', '09:00 - 7B vs 8B'],
-    'Voli': ['10:00 - 7C vs 8C', '11:00 - 7A vs 7B'],
-    'MLBB': ['13:00 - 8A vs 8C', '14:00 - 7A vs 8B'],
-    'Kasti': ['15:30 - 7C vs 8A']
-  },
-  mvpPhotos: [
-    { url: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=300&auto=format&fit=crop', text: '⭐ MVP Futsal: Budi (8A)' },
-    { url: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=300&auto=format&fit=crop', text: '⭐ MVP MLBB: R7 (8C)' },
-    { url: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?q=80&w=300&auto=format&fit=crop', text: '⭐ MVP Voli: Siti (7B)' }
-  ]
+// --- 1. DATA DARI GOOGLE SHEETS (API) ---
+// Masukin URL hasil Deploy dari Google Apps Script lo ke dalam tanda kutip di bawah:
+const GAS_URL = 'https://docs.google.com/spreadsheets/d/1SUEQgvnrJTJjqSXG9GkZdFn_h_HntJ5l9KhTEpVtyhc/edit?usp=sharing';
+
+// Variabel ini disiapin kosong dulu, nanti otomatis keisi sama data dari Sheets
+let mockData = {}; 
+
+async function fetchLeaderboardData() {
+  try {
+    // Ngasih tau user kalo data lagi dimuat (biar layarnya nggak blank)
+    document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl text-forest font-bold text-center w-full">Sabar cuy, lagi loading data... ⏳</h2>';
+
+    // Proses narik data dari link GAS
+    const response = await fetch(GAS_URL);
+    const data = await response.json();
+    
+    // Timpa variabel kosong tadi dengan data asli dari Sheets
+    mockData = data;
+
+    // Kalo data udah masuk, baru jalanin animasi dan nampilin kartu leaderboard-nya
+    renderLeaderboard();
+    startTypewriter();
+    startPolaroidSlideshow();
+    
+  } catch (error) {
+    console.error('Waduh, error ngambil datanya:', error);
+    document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl text-red font-bold text-center w-full">Gagal muat data! Cek lagi link GAS-nya ya. ☠️</h2>';
+  }
+}
+
+// Bikin webnya langsung otomatis narik data pas pertama kali dibuka
+window.onload = () => {
+  fetchLeaderboardData(); 
 };
 
 // --- 2. RENDER LEADERBOARD ---
