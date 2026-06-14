@@ -38,25 +38,31 @@ function renderLeaderboard() {
   const container = document.getElementById('leaderboard-container');
   container.innerHTML = '';
   
-  // Ambil data langsung dari key hasil looping GAS (GLOBAL_LEADERBOARD)
+  // 1. Debugging: Cek isi datanya di console F12
+  console.log("Data Leaderboard yang diterima:", mockData.GLOBAL_LEADERBOARD);
+
+  // 2. Cek apakah datanya ada
+  if (!mockData.GLOBAL_LEADERBOARD || mockData.GLOBAL_LEADERBOARD.length === 0) {
+    container.innerHTML = '<h2 class="text-xl text-red">Data GLOBAL_LEADERBOARD kosong nih, cek tab di Sheet lo!</h2>';
+    return;
+  }
+
+  // 3. Sort & Render
+  // Pastikan nama kolom di Sheets lo: "Name", "Points", "Logo" (Huruf besar depannya)
   const sortedClasses = [...mockData.GLOBAL_LEADERBOARD].sort((a, b) => b.Points - a.Points);
 
   sortedClasses.forEach((cls, index) => {
-    // PASTIIN NAMA KOLOM DI SHEETS LO PERSIS SAMA (Case sensitive!)
-    // Misal di Sheet kolomnya "Name", "Points", "Logo"
-    const cardHTML = `
+    container.innerHTML += `
       <div class="bg-white border-4 border-forest scrapbook-shadow p-4 cursor-pointer relative hover:bg-orange/10" onclick="openClassModal('${cls.Name}')">
         <div class="flex items-center gap-4">
-          <div class="text-4xl font-bold text-red border-r-2 border-dashed border-gray-300 pr-4">#${index + 1}</div>
           <div class="text-3xl">${cls.Logo}</div>
           <div class="flex-1">
             <h3 class="text-xl font-extrabold text-forest uppercase">${cls.Name}</h3>
-            <div class="text-sm font-helvetica text-gray-600">Total Points: <span class="font-bold text-orange">${cls.Points}</span></div>
+            <div class="text-sm font-helvetica text-gray-600">Total Points: <b>${cls.Points}</b></div>
           </div>
         </div>
       </div>
     `;
-    container.innerHTML += cardHTML;
   });
 }
 
