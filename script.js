@@ -9,8 +9,8 @@ const DATA_BRACKET = {
     "g7_r1": "7B", "g7_r2": "7C", "g7_r3": "7A",
     "g8_match": "A vs B | B vs C | C vs A",
     "g8_r1": "-", "g8_r2": "-", "g8_r3": "-",
-    "m1_p1": "-", "m1_p2": "RANK 2 G8",
-    "m2_p1": "RANK 1 G8", "m2_p2": "-",
+    "m1_p1": "7B", "m1_p2": "RANK 2 G8",
+    "m2_p1": "RANK 1 G8", "m2_p2": "7C",
     "m3_p1": "WINNER M1", "m3_p2": "WINNER M2",
     "m4_p1": "LOSER M1", "m4_p2": "LOSER M2",
     "champ": "[ TBD ]", "third": "[ TBD ]"
@@ -20,8 +20,8 @@ const DATA_BRACKET = {
     "g7_r1": "-", "g7_r2": "-", "g7_r3": "-",
     "g8_match": "8C vs 8A | 8A vs 8B | 8B vs 8C",
     "g8_r1": "8C", "g8_r2": "8B", "g8_r3": "8A",
-    "m1_p1": "RANK 1 G7", "m1_p2": "RANK 2 G8",
-    "m2_p1": "RANK 1 G8", "m2_p2": "RANK 2 G7",
+    "m1_p1": "RANK 1 G7", "m1_p2": "8B",
+    "m2_p1": "8C", "m2_p2": "RANK 2 G7",
     "m3_p1": "WINNER M1", "m3_p2": "WINNER M2",
     "m4_p1": "LOSER M1", "m4_p2": "LOSER M2",
     "champ": "[ TBD ]", "third": "[ TBD ]"
@@ -31,8 +31,8 @@ const DATA_BRACKET = {
     "g7_r1": "-", "g7_r2": "-", "g7_r3": "-",
     "g8_match": "8A vs 8B | 8B vs 8C | 8C vs 8A",
     "g8_r1": "8A", "g8_r2": "8C", "g8_r3": "8B",
-    "m1_p1": "RANK 1 G7", "m1_p2": "RANK 2 G8",
-    "m2_p1": "RANK 1 G8", "m2_p2": "RANK 2 G7",
+    "m1_p1": "RANK 1 G7", "m1_p2": "8C",
+    "m2_p1": "8A", "m2_p2": "RANK 2 G7",
     "m3_p1": "WINNER M1", "m3_p2": "WINNER M2",
     "m4_p1": "-", "m4_p2": "-", "champ": "[ TBD ]", "third": "-"
   },
