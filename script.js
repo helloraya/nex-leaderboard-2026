@@ -3,12 +3,13 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4wFlZj816RRjcX9xmQrzj
 
 let mockData = {}; 
 
-// FUNGSI SAKTI: Ngubah link GDrive biasa jadi link Foto Mentah
+// FUNGSI SAKTI V2: Jalur VIP bypass Google Drive
 function fixGoogleDriveLink(url) {
   if (!url) return '';
   const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if (match && match[1]) {
-    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    // Kita akalin pake endpoint thumbnail Google biar ga diblokir
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
   }
   return url; 
 }
