@@ -3,12 +3,15 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4wFlZj816RRjcX9xmQrzj
 
 let mockData = {}; 
 
-// FUNGSI SAKTI V2: Jalur VIP bypass Google Drive
+// VARIABEL REM TANGAN BUAT ANIMASI
+let typeTimeout; 
+let polaroidInterval; 
+
+// FUNGSI SAKTI: Ngubah link GDrive biasa jadi link Foto Mentah
 function fixGoogleDriveLink(url) {
   if (!url) return '';
   const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   if (match && match[1]) {
-    // Kita akalin pake endpoint thumbnail Google biar ga diblokir
     return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
   }
   return url; 
@@ -16,24 +19,27 @@ function fixGoogleDriveLink(url) {
 
 async function fetchLeaderboardData() {
   try {
-    document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl font-bold text-center w-full">Sabar cuy, lagi loading data... ⏳</h2>';
+    // CUMA munculin loading text pas pertama kali buka web (biar ga kedap-kedip di TV tiap 30 dtk)
+    if (Object.keys(mockData).length === 0) {
+      document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl font-bold text-center w-full">Sabar cuy, lagi nyadap satelit OSIS... ⏳</h2>';
+    }
 
     const response = await fetch(GAS_URL);
     mockData = await response.json();
 
     renderLeaderboard();
-    renderGroups(); // Nampilin Grup 7 & 8
+    renderGroups(); 
     startTypewriter();
     startPolaroidSlideshow();
     
   } catch (error) {
-    document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl text-red-600 font-bold text-center w-full">Gagal muat data! Cek lagi link GAS-nya ya. ☠️</h2>';
+    console.log("Wah gagal narik data background: ", error);
   }
 }
 
 window.onload = () => {
   fetchLeaderboardData(); 
-  setInterval(fetchLeaderboardData, 30000);
+  setInterval(fetchLeaderboardData, 30000); // Tarik data baru tiap 30 detik
 };
 
 // --- RENDER LEADERBOARD UTAMA ---
@@ -68,6 +74,8 @@ function renderLeaderboard() {
 function renderGroups() {
   const container7 = document.getElementById('group-7-container');
   const container8 = document.getElementById('group-8-container');
+  if(!container7 || !container8) return; // Mencegah error kalo lagi ga di tab bracket
+  
   container7.innerHTML = ''; container8.innerHTML = '';
 
   const sortedClasses = [...mockData.GLOBAL_LEADERBOARD].sort((a, b) => b['Total Poin'] - a['Total Poin']);
@@ -82,7 +90,6 @@ function renderGroups() {
       </div>
     `;
     
-    // Misahin berdasarkan karakter pertama (7 atau 8)
     if (cls['Kelas'].startsWith('7')) {
       container7.innerHTML += htmlCard;
     } else if (cls['Kelas'].startsWith('8')) {
@@ -105,7 +112,6 @@ function openClassModal(className, logoUrl) {
     logoEl.classList.add('hidden');
   }
   
-  // A. Render Roster
   const rosterDiv = document.getElementById('modal-roster');
   rosterDiv.innerHTML = '';
   const rosterList = mockData.ROSTER_PEMAIN ? mockData.ROSTER_PEMAIN.filter(r => r['Kelas'] === className) : [];
@@ -123,7 +129,6 @@ function openClassModal(className, logoUrl) {
      rosterDiv.innerHTML = '<p class="text-gray-500">Belum diinput panitia.</p>';
   }
 
-  // B. Render History
   const historyDiv = document.getElementById('modal-history');
   historyDiv.innerHTML = '';
   const historyList = mockData.MATCH_HISTORY ? mockData.MATCH_HISTORY.filter(m => m['Kelas 1'] === className || m['Kelas 2'] === className) : [];
@@ -141,7 +146,6 @@ function openClassModal(className, logoUrl) {
     historyDiv.innerHTML = '<p class="text-gray-500">Belum ada tanding.</p>';
   }
 
-  // C. Render Supporter
   const supporterDiv = document.getElementById('modal-supporter');
   supporterDiv.innerHTML = '';
   const supLogs = mockData.SUPPORTER_LOGS ? mockData.SUPPORTER_LOGS.filter(s => s['Kelas'] === className) : [];
@@ -179,7 +183,36 @@ function switchModalTab(tabName) {
 // --- TAB & SCHEDULE NAVIGATION ---
 function switchTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden', 'md:flex'));
+  
+  const bracketEl = document.getElementById('tab-bracket');
+  if(bracketEl && tabId !== 'bracket') bracketEl.classList.add('hidden');
+  
   document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+}
+
+function switchBracket(sport) {
+  document.querySelectorAll('.bracket-btn').forEach(el => {
+    el.classList.remove('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
+    el.classList.add('text-[#607456]');
+  });
+  event.target.classList.add('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
+  event.target.classList.remove('text-[#607456]');
+  
+  document.getElementById('bracket-title').innerText = `BRACKET ${sport.toUpperCase()}`;
+
+  const bronzeMatch = document.getElementById('bronze-match');
+  const bronzeArrow = document.querySelector('.bronze-arrow');
+  const bronzeWinner = document.querySelector('.bronze-winner');
+  
+  if (sport.toUpperCase() === 'FUTSAL' || sport.toUpperCase() === 'MLBB') {
+    if (bronzeMatch) bronzeMatch.classList.remove('hidden');
+    if (bronzeArrow) bronzeArrow.classList.remove('hidden');
+    if (bronzeWinner) bronzeWinner.classList.remove('hidden');
+  } else {
+    if (bronzeMatch) bronzeMatch.classList.add('hidden');
+    if (bronzeArrow) bronzeArrow.classList.add('hidden');
+    if (bronzeWinner) bronzeWinner.classList.add('hidden');
+  }
 }
 
 function showSchedule(sport) {
@@ -187,7 +220,6 @@ function showSchedule(sport) {
   const list = document.getElementById('schedule-list');
   list.innerHTML = '';
   
-  // Pake logic toLowerCase() dan trim() biar kebal dari typo spasi di Google Sheets
   const schedules = mockData.SCHEDULE_POPUP ? mockData.SCHEDULE_POPUP.filter(s => s['Cabang Lomba'] && s['Cabang Lomba'].toString().trim().toLowerCase() === sport.toLowerCase()) : [];
   
   if(schedules.length > 0) {
@@ -210,16 +242,21 @@ function closeSchedule() {
   setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
 }
 
-// --- ANIMASI Y2K ---
+// --- ANIMASI Y2K FIXED (Pake Rem Tangan) ---
 function startTypewriter() {
+  // REM TANGAN: Bersihin memori ngetik yang lama biar ga tumpang tindih
+  clearTimeout(typeTimeout); 
+
   const logEl = document.getElementById('typewriter-text');
   const logs = mockData.SUPPORTER_LOGS && mockData.SUPPORTER_LOGS.length > 0 
-    ? mockData.SUPPORTER_LOGS.map(log => log['Deskripsi (Tampil di Web)']).filter(text => text)
+    ? mockData.SUPPORTER_LOGS.map(log => log['Deskripsi (Tampil di Web)']).filter(text => text && text.trim() !== '')
     : ["Aman terkendali. Belum ada pergerakan aneh..."];
 
   let logIndex = 0, charIndex = 0, isDeleting = false;
 
   function type() {
+    if (!logs || logs.length === 0) return;
+    
     const currentText = logs[logIndex];
     if (isDeleting) charIndex--; else charIndex++;
     
@@ -229,12 +266,16 @@ function startTypewriter() {
     if (!isDeleting && charIndex === currentText.length) { speed = 3000; isDeleting = true; } 
     else if (isDeleting && charIndex === 0) { isDeleting = false; logIndex = (logIndex + 1) % logs.length; speed = 500; }
     
-    setTimeout(type, speed);
+    // Simpen ke variabel rem tangan
+    typeTimeout = setTimeout(type, speed); 
   }
   type();
 }
 
 function startPolaroidSlideshow() {
+  // REM TANGAN: Bersihin memori slideshow yang lama
+  clearInterval(polaroidInterval); 
+
   const imgEl = document.getElementById('polaroid-img');
   const textEl = document.getElementById('polaroid-text');
   
@@ -243,13 +284,12 @@ function startPolaroidSlideshow() {
   if (mvpList.length === 0) return;
 
   let photoIndex = 0;
-  
-  // Pake fungsi sakti buat benerin link fotonya
   imgEl.src = fixGoogleDriveLink(mvpList[photoIndex]['Foto POTM (URL)']);
   textEl.innerText = `⭐ MVP ${mvpList[photoIndex]['Cabang']}: ${mvpList[photoIndex]['Player of the Match']}`;
 
   if (mvpList.length > 1) {
-    setInterval(() => {
+    // Simpen ke variabel rem tangan
+    polaroidInterval = setInterval(() => {
       imgEl.style.opacity = 0; textEl.style.opacity = 0;
       setTimeout(() => {
         photoIndex = (photoIndex + 1) % mvpList.length;
@@ -258,33 +298,5 @@ function startPolaroidSlideshow() {
         imgEl.style.opacity = 1; textEl.style.opacity = 1;
       }, 500); 
     }, 6000);
-  }
-}
-// --- LOGIC GANTI CABOR DI TAB BRACKET ---
-function switchBracket(sport) {
-  // 1. Ganti style tombol
-  document.querySelectorAll('.bracket-btn').forEach(el => {
-    el.classList.remove('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
-    el.classList.add('text-[#607456]');
-  });
-  event.target.classList.add('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
-  event.target.classList.remove('text-[#607456]');
-  
-  // 2. Ganti Judul Utama
-  document.getElementById('bracket-title').innerText = `BRACKET ${sport.toUpperCase()}`;
-
-  // 3. Hide/Show Juara 3 (Kasti & Voli ga dapet!)
-  const bronzeMatch = document.getElementById('bronze-match');
-  const bronzeArrow = document.querySelector('.bronze-arrow');
-  const bronzeWinner = document.querySelector('.bronze-winner');
-  
-  if (sport.toUpperCase() === 'FUTSAL' || sport.toUpperCase() === 'MLBB') {
-    if (bronzeMatch) bronzeMatch.classList.remove('hidden');
-    if (bronzeArrow) bronzeArrow.classList.remove('hidden');
-    if (bronzeWinner) bronzeWinner.classList.remove('hidden');
-  } else {
-    if (bronzeMatch) bronzeMatch.classList.add('hidden');
-    if (bronzeArrow) bronzeArrow.classList.add('hidden');
-    if (bronzeWinner) bronzeWinner.classList.add('hidden');
   }
 }
