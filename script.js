@@ -86,7 +86,10 @@ async function fetchLeaderboardData() {
 
 window.onload = () => {
   fetchLeaderboardData(); 
-  setInterval(fetchLeaderboardData, 30000); // Tarik data baru tiap 30 detik
+  setInterval(fetchLeaderboardData, 30000);
+  
+  // Tambahin ini biar bracket futsal langsung muncul duluan
+  setTimeout(() => switchBracket('Futsal'), 1000); 
 };
 
 // --- RENDER LEADERBOARD UTAMA ---
@@ -237,7 +240,9 @@ function switchTab(tabId) {
   document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 }
 
+// --- LOGIC GANTI CABOR DI TAB BRACKET ---
 function switchBracket(sport) {
+  // 1. Ganti style tombol
   document.querySelectorAll('.bracket-btn').forEach(el => {
     el.classList.remove('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
     el.classList.add('text-[#607456]');
@@ -245,23 +250,41 @@ function switchBracket(sport) {
   event.target.classList.add('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
   event.target.classList.remove('text-[#607456]');
   
+  // 2. Ganti Judul
   document.getElementById('bracket-title').innerText = `BRACKET ${sport.toUpperCase()}`;
 
-  const bronzeMatch = document.getElementById('bronze-match');
-  const bronzeArrow = document.querySelector('.bronze-arrow');
-  const bronzeWinner = document.querySelector('.bronze-winner');
-  
-  if (sport.toUpperCase() === 'FUTSAL' || sport.toUpperCase() === 'MLBB') {
-    if (bronzeMatch) bronzeMatch.classList.remove('hidden');
-    if (bronzeArrow) bronzeArrow.classList.remove('hidden');
-    if (bronzeWinner) bronzeWinner.classList.remove('hidden');
-  } else {
-    if (bronzeMatch) bronzeMatch.classList.add('hidden');
-    if (bronzeArrow) bronzeArrow.classList.add('hidden');
-    if (bronzeWinner) bronzeWinner.classList.add('hidden');
+  // 3. Hide/Show Juara 3 (Kasti & Voli ga dapet!)
+  const isBronze = (sport.toUpperCase() === 'FUTSAL' || sport.toUpperCase() === 'MLBB');
+  document.getElementById('bronze-match')?.classList.toggle('hidden', !isBronze);
+  document.querySelector('.bronze-arrow')?.classList.toggle('hidden', !isBronze);
+  document.querySelector('.bronze-winner')?.classList.toggle('hidden', !isBronze);
+
+  // 4. MASUKIN DATA DARI MINI-SPREADSHEET KE HTML
+  const data = DATA_BRACKET[sport];
+  if (data) {
+    document.getElementById('br-g7-match').innerText = data.g7_match;
+    document.getElementById('br-g7-r1').innerText = data.g7_r1;
+    document.getElementById('br-g7-r2').innerText = data.g7_r2;
+    document.getElementById('br-g7-r3').innerText = data.g7_r3;
+    document.getElementById('br-g8-match').innerText = data.g8_match;
+    document.getElementById('br-g8-r1').innerText = data.g8_r1;
+    document.getElementById('br-g8-r2').innerText = data.g8_r2;
+    document.getElementById('br-g8-r3').innerText = data.g8_r3;
+    
+    document.getElementById('br-m1-p1').innerText = data.m1_p1;
+    document.getElementById('br-m1-p2').innerText = data.m1_p2;
+    document.getElementById('br-m2-p1').innerText = data.m2_p1;
+    document.getElementById('br-m2-p2').innerText = data.m2_p2;
+    
+    document.getElementById('br-m3-p1').innerText = data.m3_p1;
+    document.getElementById('br-m3-p2').innerText = data.m3_p2;
+    document.getElementById('br-m4-p1').innerText = data.m4_p1;
+    document.getElementById('br-m4-p2').innerText = data.m4_p2;
+    
+    document.getElementById('br-champ').innerText = data.champ;
+    document.getElementById('br-3rd').innerText = data.third;
   }
 }
-
 function showSchedule(sport) {
   document.getElementById('schedule-title').innerText = `Jadwal ${sport}`;
   const list = document.getElementById('schedule-list');
