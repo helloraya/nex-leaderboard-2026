@@ -5,18 +5,18 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4wFlZj816RRjcX9xmQrzj
 // ==========================================
 const DATA_BRACKET = {
   "Futsal": {
-    "g7_match": "7A vs 7B | 7B vs 7C | 7C vs 7A",
-    "g7_r1": "7B Indrakila", "g7_r2": "7C Inerie", "g7_r3": "7A Imogiri",
-    "g8_match": "8A vs 8B | 8B vs 8C | 8C vs 8A",
+    "g7_match": "7C vs 7A | 7A vs 7B | 7B vs 7C",
+    "g7_r1": "7B", "g7_r2": "7C", "g7_r3": "7A",
+    "g8_match": "A vs B | B vs C | C vs A",
     "g8_r1": "-", "g8_r2": "-", "g8_r3": "-",
-    "m1_p1": "7B Indrakila", "m1_p2": "RANK 2 G8",
-    "m2_p1": "RANK 1 G8", "m2_p2": "7C Inerie",
+    "m1_p1": "-", "m1_p2": "RANK 2 G8",
+    "m2_p1": "RANK 1 G8", "m2_p2": "-",
     "m3_p1": "WINNER M1", "m3_p2": "WINNER M2",
     "m4_p1": "LOSER M1", "m4_p2": "LOSER M2",
     "champ": "[ TBD ]", "third": "[ TBD ]"
   },
   "MLBB": {
-    "g7_match": "7C vs 7B | 7A vs 7B | ...",
+    "g7_match": "A vs B | A vs C | B vs C",
     "g7_r1": "-", "g7_r2": "-", "g7_r3": "-",
     "g8_match": "A vs B | B vs C | C vs A",
     "g8_r1": "-", "g8_r2": "-", "g8_r3": "-",
