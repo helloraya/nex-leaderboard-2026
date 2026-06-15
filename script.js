@@ -21,7 +21,7 @@ async function fetchLeaderboardData() {
   try {
     // CUMA munculin loading text pas pertama kali buka web (biar ga kedap-kedip di TV tiap 30 dtk)
     if (Object.keys(mockData).length === 0) {
-      document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl font-bold text-center w-full">Sabar cuy, lagi nyadap satelit OSIS... ⏳</h2>';
+      document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl font-bold text-center w-full">Loading ... ⏳</h2>';
     }
 
     const response = await fetch(GAS_URL);
