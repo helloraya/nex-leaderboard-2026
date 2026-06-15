@@ -1,36 +1,31 @@
 // --- 1. DATA DARI GOOGLE SHEETS (API) ---
-// Masukin URL hasil Deploy dari Google Apps Script lo ke dalam tanda kutip di bawah:
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4wFlZj816RRjcX9xmQrzjhQv-Hte_kOyi1j1rpQvM-goLSoZA5WfFkXK_7kI5uHXnmg/exec';
+// Masukin URL hasil Deploy dari Google Apps Script lu!
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbw4wFlZj816RRjcX9xmQrzjhQv-Hte_kOyi1j1rpQvM-goLSoZA5WfFkXK_7kI5uHXnmg/exec'; 
 
-// Variabel ini disiapin kosong dulu, nanti otomatis keisi sama data dari Sheets
 let mockData = {}; 
 
 async function fetchLeaderboardData() {
   try {
-    // Ngasih tau user kalo data lagi dimuat (biar layarnya nggak blank)
-    document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl text-forest font-bold text-center w-full">Sabar cuy, lagi loading data... ⏳</h2>';
+    document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl text-forest font-bold text-center w-full">Loading ... ⏳</h2>';
 
-    // Proses narik data dari link GAS
     const response = await fetch(GAS_URL);
     const data = await response.json();
-    
-    // Timpa variabel kosong tadi dengan data asli dari Sheets
     mockData = data;
 
-    // Kalo data udah masuk, baru jalanin animasi dan nampilin kartu leaderboard-nya
     renderLeaderboard();
     startTypewriter();
     startPolaroidSlideshow();
     
   } catch (error) {
-    console.error('Waduh, error ngambil datanya:', error);
+    console.error('Error:', error);
     document.getElementById('leaderboard-container').innerHTML = '<h2 class="text-2xl text-red font-bold text-center w-full">Gagal muat data! Cek lagi link GAS-nya ya. ☠️</h2>';
   }
 }
 
-// Bikin webnya langsung otomatis narik data pas pertama kali dibuka
 window.onload = () => {
   fetchLeaderboardData(); 
+  // Auto-refresh layar setiap 30 detik biar data suporter dan poin update terus
+  setInterval(fetchLeaderboardData, 30000);
 };
 
 // --- 2. RENDER LEADERBOARD ---
@@ -38,27 +33,24 @@ function renderLeaderboard() {
   const container = document.getElementById('leaderboard-container');
   container.innerHTML = '';
   
-  // 1. Debugging: Cek isi datanya di console F12
-  console.log("Data Leaderboard yang diterima:", mockData.GLOBAL_LEADERBOARD);
-
-  // 2. Cek apakah datanya ada
   if (!mockData.GLOBAL_LEADERBOARD || mockData.GLOBAL_LEADERBOARD.length === 0) {
     container.innerHTML = '<h2 class="text-xl text-red">Data GLOBAL_LEADERBOARD kosong nih, cek tab di Sheet lo!</h2>';
     return;
   }
 
-  // 3. Sort & Render
-  // Pastikan nama kolom di Sheets lo: "Name", "Points", "Logo" (Huruf besar depannya)
-  const sortedClasses = [...mockData.GLOBAL_LEADERBOARD].sort((a, b) => b.Points - a.Points);
+  // Tarik data pakai nama Header Kolom yang bener ('Total Poin')
+  const sortedClasses = [...mockData.GLOBAL_LEADERBOARD].sort((a, b) => b['Total Poin'] - a['Total Poin']);
 
   sortedClasses.forEach((cls, index) => {
+    const rank = index + 1;
+    const isRank1 = rank === 1 ? 'card-rank-1' : '';
+    
     container.innerHTML += `
-      <div class="bg-white border-4 border-forest scrapbook-shadow p-4 cursor-pointer relative hover:bg-orange/10" onclick="openClassModal('${cls.Name}')">
+      <div class="bg-white border-4 border-forest scrapbook-shadow p-4 cursor-pointer relative hover:bg-orange/10 ${isRank1}" onclick="openClassModal('${cls['Kelas']}')">
         <div class="flex items-center gap-4">
-          <div class="text-3xl">${cls.Logo}</div>
           <div class="flex-1">
-            <h3 class="text-xl font-extrabold text-forest uppercase">${cls.Name}</h3>
-            <div class="text-sm font-helvetica text-gray-600">Total Points: <b>${cls.Points}</b></div>
+            <h3 class="text-2xl font-extrabold text-forest uppercase">${cls['Kelas']} ${cls['Nama Pasukan']}</h3>
+            <div class="text-sm font-helvetica text-gray-600">Total Points: <b>${cls['Total Poin']}</b></div>
           </div>
         </div>
       </div>
@@ -72,46 +64,81 @@ const classModal = document.getElementById('class-modal');
 function openClassModal(className) {
   document.getElementById('modal-classname').innerText = className;
   
-  // Render Roster
+  // A. Render Roster Pemain
   const rosterDiv = document.getElementById('modal-roster');
   rosterDiv.innerHTML = '';
-  const rosterData = mockData.roster[className] || mockData.roster['8A Nania']; // Fallback for mockup
   
-  for (const [sport, players] of Object.entries(rosterData)) {
-    let playersHTML = '';
-    if (sport === 'Kasti') {
-      playersHTML = `<p class="font-extrabold text-red text-lg italic">"MASSIVE DEPLOYMENT: FULL SQUAD" 🚀</p>`;
-    } else if (sport === 'Voli') {
-      playersHTML = `<p class="font-helvetica text-gray-700">${players.slice(0,6).join(', ')}</p>`;
-    } else {
-      playersHTML = `<p class="font-helvetica text-gray-700">${players.join(', ')}</p>`;
-    }
-    rosterDiv.innerHTML += `
-      <div class="mb-3">
-        <h4 class="font-bold text-orange border-b border-orange/30">${sport}</h4>
-        ${playersHTML}
-      </div>
-    `;
+  const rosterList = mockData.ROSTER_PEMAIN ? mockData.ROSTER_PEMAIN.filter(r => r['Kelas'] === className) : [];
+  if (rosterList.length > 0) {
+    rosterList.forEach(roster => {
+      let playersHTML = '';
+      const sport = roster['Cabang Lomba'];
+      
+      if (sport === 'Kasti') {
+        playersHTML = `<p class="font-extrabold text-red text-lg italic">"MASSIVE DEPLOYMENT: FULL SQUAD" 🚀</p>`;
+      } else {
+        const players = [
+          roster['Nama Pemain 1 (C)'], roster['Nama Pemain 2'], roster['Nama Pemain 3'], 
+          roster['Nama Pemain 4'], roster['Nama Pemain 5'], roster['Nama Pemain 6']
+        ].filter(p => p && p !== '-');
+        
+        playersHTML = `<p class="font-helvetica text-gray-700">${players.join(', ')} <br> <span class="text-sm italic font-bold text-gray-500">Cadangan: ${roster['Cadangan'] || '-'}</span></p>`;
+      }
+      
+      rosterDiv.innerHTML += `
+        <div class="mb-3">
+          <h4 class="font-bold text-orange border-b border-orange/30">${sport}</h4>
+          ${playersHTML}
+        </div>
+      `;
+    });
+  } else {
+     rosterDiv.innerHTML = '<p class="text-gray-600">Data roster belum diinput panitia.</p>';
   }
 
-  // Render History
+  // B. Render Match History
   const historyDiv = document.getElementById('modal-history');
   historyDiv.innerHTML = '';
-  const historyData = mockData.matchHistory[className] || mockData.matchHistory['8A Nania'];
-  historyData.forEach(match => {
-    historyDiv.innerHTML += `
-      <div class="flex justify-between items-center border-b border-gray-300 py-2">
-        <div><span class="font-bold text-forest">${match.sport}</span> vs ${match.vs}</div>
-        <div class="text-right">
-          <span class="font-bold ${match.result === 'WIN' ? 'text-forest' : 'text-red'}">${match.result} (${match.score})</span>
-          <span class="ml-2 text-orange font-mono">${match.points}</span>
+  
+  const historyList = mockData.MATCH_HISTORY ? mockData.MATCH_HISTORY.filter(m => m['Kelas 1'] === className || m['Kelas 2'] === className) : [];
+  if (historyList.length > 0) {
+    historyList.forEach(match => {
+      const isWin = match['Pemenang'] === className;
+      const isSeri = match['Pemenang'] === 'Seri';
+      const resultText = isWin ? 'WIN' : (isSeri ? 'DRAW' : 'LOSE');
+      const resultColor = isWin ? 'text-forest' : (isSeri ? 'text-orange' : 'text-red');
+      
+      historyDiv.innerHTML += `
+        <div class="flex justify-between items-center border-b border-gray-300 py-2">
+          <div><span class="font-bold text-forest">${match['Cabang']}</span> vs ${match['Kelas 1'] === className ? match['Kelas 2'] : match['Kelas 1']}</div>
+          <div class="text-right">
+            <span class="font-bold ${resultColor}">${resultText} (${match['Skor 1']} - ${match['Skor 2']})</span>
+          </div>
         </div>
-      </div>
-    `;
-  });
+      `;
+    });
+  } else {
+    historyDiv.innerHTML = '<p class="text-gray-600">Belum ada riwayat tanding.</p>';
+  }
 
-  // Render Supporter (Mockup generic)
-  document.getElementById('modal-supporter').innerHTML = `<p class="text-gray-600 italic">No specific infractions/logs recorded for this class yet. Keep it clean!</p>`;
+  // C. Render Supporter Log
+  const supporterDiv = document.getElementById('modal-supporter');
+  supporterDiv.innerHTML = '';
+  
+  const supporterLogs = mockData.SUPPORTER_LOGS ? mockData.SUPPORTER_LOGS.filter(s => s['Kelas'] === className) : [];
+  if (supporterLogs.length > 0) {
+    supporterLogs.forEach(log => {
+      const pointColor = log['Poin (Angka)'] > 0 ? 'text-forest' : 'text-red';
+      supporterDiv.innerHTML += `
+        <div class="border-b border-gray-200 py-2 flex justify-between gap-4">
+          <span class="text-gray-700">${log['Deskripsi (Tampil di Web)']}</span>
+          <span class="font-bold ${pointColor}">${log['Poin (Angka)'] > 0 ? '+' : ''}${log['Poin (Angka)']}</span>
+        </div>
+      `;
+    });
+  } else {
+     supporterDiv.innerHTML = `<p class="text-gray-600 italic">Belum ada log suporter untuk kelas ini. Keep it clean!</p>`;
+  }
 
   classModal.classList.remove('hidden');
   classModal.classList.add('flex');
@@ -142,7 +169,7 @@ function switchModalTab(tabName) {
   }
 }
 
-// --- 4. TABS & SCHEDULES ---
+// --- 4. TABS & SCHEDULES UI ---
 function switchTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.nav-btn').forEach(el => {
@@ -171,12 +198,17 @@ function showSchedule(sport) {
   const list = document.getElementById('schedule-list');
   list.innerHTML = '';
   
-  if(mockData.schedules[sport]) {
-    mockData.schedules[sport].forEach(sch => {
-      list.innerHTML += `<li class="border-b border-gray-200 py-1">⏰ ${sch}</li>`;
+  const schedules = mockData.SCHEDULE_POPUP ? mockData.SCHEDULE_POPUP.filter(s => s['Cabang Lomba'] === sport) : [];
+  
+  if(schedules.length > 0) {
+    schedules.forEach(sch => {
+      list.innerHTML += `<li class="border-b border-gray-200 py-2">
+        ⏰ <b>${sch['Waktu']}</b> (${sch['Status']}) <br> 
+        <span class="text-orange font-bold">${sch['Matchup (Tim A vs Tim B)']}</span>
+      </li>`;
     });
   } else {
-    list.innerHTML = `<li>No match scheduled today.</li>`;
+    list.innerHTML = `<li>Belum ada jadwal tertulis hari ini.</li>`;
   }
 
   modal.classList.remove('hidden');
@@ -196,12 +228,20 @@ function closeSchedule() {
 // --- 5. ANIMASI (Typewriter & Polaroid) ---
 function startTypewriter() {
   const logEl = document.getElementById('typewriter-text');
+  
+  // Tarik dari kolom 'Deskripsi (Tampil di Web)' di tab SUPPORTER_LOGS
+  const logs = mockData.SUPPORTER_LOGS && mockData.SUPPORTER_LOGS.length > 0 
+    ? mockData.SUPPORTER_LOGS.map(log => log['Deskripsi (Tampil di Web)']).filter(text => text)
+    : [];
+
+  if (logs.length === 0) logs.push("Aman terkendali. Belum ada pergerakan aneh dari suporter...");
+
   let logIndex = 0;
   let charIndex = 0;
   let isDeleting = false;
 
   function type() {
-    const currentText = mockData.supporterLogs[logIndex];
+    const currentText = logs[logIndex];
     if (isDeleting) {
       logEl.innerText = currentText.substring(0, charIndex - 1);
       charIndex--;
@@ -213,11 +253,11 @@ function startTypewriter() {
     let typeSpeed = isDeleting ? 30 : 100;
 
     if (!isDeleting && charIndex === currentText.length) {
-      typeSpeed = 2000; // Pause at end
+      typeSpeed = 3000; 
       isDeleting = true;
     } else if (isDeleting && charIndex === 0) {
       isDeleting = false;
-      logIndex = (logIndex + 1) % mockData.supporterLogs.length;
+      logIndex = (logIndex + 1) % logs.length;
       typeSpeed = 500;
     }
     setTimeout(type, typeSpeed);
@@ -228,21 +268,35 @@ function startTypewriter() {
 function startPolaroidSlideshow() {
   const imgEl = document.getElementById('polaroid-img');
   const textEl = document.getElementById('polaroid-text');
-  let photoIndex = 0;
+  
+  // Tarik dari tab MATCH_HISTORY yang kolom URL Fotonya ga kosong
+  const mvpList = mockData.MATCH_HISTORY 
+    ? mockData.MATCH_HISTORY.filter(m => m['Foto POTM (URL)'] && m['Foto POTM (URL)'].trim() !== '')
+    : [];
 
-  setInterval(() => {
-    // Fade out
-    imgEl.style.opacity = 0;
-    textEl.style.opacity = 0;
-    
-    setTimeout(() => {
-      photoIndex = (photoIndex + 1) % mockData.mvpPhotos.length;
-      imgEl.src = mockData.mvpPhotos[photoIndex].url;
-      textEl.innerText = mockData.mvpPhotos[photoIndex].text;
+  if (mvpList.length === 0) {
+    textEl.innerText = "Belum ada MVP terpilih!";
+    return;
+  }
+
+  let photoIndex = 0;
+  
+  imgEl.src = mvpList[photoIndex]['Foto POTM (URL)'];
+  textEl.innerText = `⭐ MVP ${mvpList[photoIndex]['Cabang']}: ${mvpList[photoIndex]['Player of the Match']}`;
+
+  if (mvpList.length > 1) {
+    setInterval(() => {
+      imgEl.style.opacity = 0;
+      textEl.style.opacity = 0;
       
-      // Fade in
-      imgEl.style.opacity = 1;
-      textEl.style.opacity = 1;
-    }, 500); // Wait for fade out to complete
-  }, 6000); // Ganti setiap 6 detik
+      setTimeout(() => {
+        photoIndex = (photoIndex + 1) % mvpList.length;
+        imgEl.src = mvpList[photoIndex]['Foto POTM (URL)'];
+        textEl.innerText = `⭐ MVP ${mvpList[photoIndex]['Cabang']}: ${mvpList[photoIndex]['Player of the Match']}`;
+        
+        imgEl.style.opacity = 1;
+        textEl.style.opacity = 1;
+      }, 500); 
+    }, 6000);
+  }
 }
