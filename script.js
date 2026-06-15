@@ -259,3 +259,24 @@ function startPolaroidSlideshow() {
     }, 6000);
   }
 }
+// --- LOGIC GANTI CABOR DI TAB BRACKET ---
+function switchBracket(sport) {
+  // 1. Ganti style tombol yang lagi aktif
+  document.querySelectorAll('.bracket-btn').forEach(el => {
+    el.classList.remove('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
+    el.classList.add('text-[#607456]');
+  });
+  event.target.classList.add('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
+  event.target.classList.remove('text-[#607456]');
+  
+  // 2. Ganti Judul Utama
+  document.getElementById('bracket-title').innerText = `${sport.toUpperCase()} STAGE`;
+
+  // 3. Logic Nyembunyiin Juara 3 (Kasti & Voli ga dapet!)
+  const bronzeMatch = document.getElementById('bronze-match');
+  if (sport.toUpperCase() === 'FUTSAL' || sport.toUpperCase() === 'MLBB') {
+    bronzeMatch.classList.remove('hidden');
+  } else {
+    bronzeMatch.classList.add('hidden');
+  }
+}
