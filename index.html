@@ -56,9 +56,8 @@
     </section>
 
 <!-- TAB: TOURNAMENT STAGE (BRACKET SESUAI GAMBAR) -->
-    <section id="tab-bracket" class="tab-content hidden flex flex-col items-center w-full max-w-[1400px] mx-auto">
+   <section id="tab-bracket" class="tab-content hidden flex flex-col items-center w-full max-w-[1400px] mx-auto">
       
-      <!-- Tombol Navigasi Cabor -->
       <div class="flex flex-wrap justify-center gap-4 mb-8">
         <button class="bracket-btn active text-[#7B2525] font-bold underline decoration-4 underline-offset-8 transition" onclick="switchBracket('Futsal')">FUTSAL</button>
         <button class="bracket-btn text-[#607456] font-bold transition" onclick="switchBracket('MLBB')">MLBB</button>
@@ -68,138 +67,98 @@
 
       <h3 id="bracket-title" class="text-4xl font-extrabold text-[#BA6A4C] mb-8 text-center uppercase y2k-stroke">BRACKET FUTSAL</h3>
 
-      <!-- CONTAINER UTAMA (KIRI: GRUP, KANAN: KNOCKOUT) -->
       <div class="flex flex-col xl:flex-row w-full gap-8 bg-white p-6 border-4 border-[#607456] scrapbook-shadow relative overflow-x-auto">
         <div class="washi-tape bg-[#BA6A4C]/60 absolute -top-4 left-10 w-24 h-6 -rotate-2"></div>
 
-        <!-- ================= BAGIAN KIRI: PENYISIHAN GRUP ================= -->
         <div class="flex flex-col gap-6 w-full xl:w-2/5 min-w-[350px] border-r-0 xl:border-r-4 border-dashed border-[#EEE0CC] pr-0 xl:pr-6">
           
-          <!-- GRUP 7 -->
           <div class="flex border-4 border-black p-3 relative bg-[#EEE0CC]/20">
-            <!-- Kolom Matches -->
             <div class="w-2/3 pr-4 border-r-2 border-black">
               <h4 class="text-center font-black text-xl mb-4 uppercase">GROUP VII</h4>
-              <div class="flex flex-col gap-3">
-                <div class="flex justify-center items-center gap-2 font-bold text-sm">
-                  <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ 7C ]</div> <span class="text-[#BA6A4C]">VS.</span> <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ 7A ]</div>
-                </div>
-                <div class="flex justify-center items-center gap-2 font-bold text-sm">
-                  <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ 7A ]</div> <span class="text-[#BA6A4C]">VS.</span> <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ 7B ]</div>
-                </div>
-                <div class="flex justify-center items-center gap-2 font-bold text-sm">
-                  <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ 7B ]</div> <span class="text-[#BA6A4C]">VS.</span> <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ 7C ]</div>
-                </div>
-              </div>
+              <div id="br-g7-match" class="text-center font-bold text-[#BA6A4C] text-sm mt-4 tracking-widest">A vs B | B vs C | C vs A</div>
             </div>
-            <!-- Kolom Rank -->
             <div class="w-1/3 pl-4 flex flex-col justify-center font-bold text-lg">
               <h4 class="text-center font-black mb-2 uppercase text-[#7B2525]">RANK</h4>
-              <div class="mb-1">1. <span class="border-b-2 border-black inline-block w-16"></span></div>
-              <div class="mb-1">2. <span class="border-b-2 border-black inline-block w-16"></span></div>
-              <div>3. <span class="border-b-2 border-black inline-block w-16"></span></div>
+              <div class="mb-1">1. <span id="br-g7-r1" class="border-b-2 border-black inline-block px-2 text-[#BA6A4C]">-</span></div>
+              <div class="mb-1">2. <span id="br-g7-r2" class="border-b-2 border-black inline-block px-2">-</span></div>
+              <div>3. <span id="br-g7-r3" class="border-b-2 border-black inline-block px-2 text-gray-500">-</span></div>
             </div>
           </div>
 
-          <!-- GRUP 8 -->
           <div class="flex border-4 border-black p-3 relative bg-[#EEE0CC]/20">
-            <!-- Kolom Matches -->
             <div class="w-2/3 pr-4 border-r-2 border-black">
               <h4 class="text-center font-black text-xl mb-4 uppercase">GROUP VIII</h4>
-              <div class="flex flex-col gap-3">
-                <div class="flex justify-center items-center gap-2 font-bold text-sm">
-                  <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ A ]</div> <span class="text-[#BA6A4C]">VS.</span> <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ B ]</div>
-                </div>
-                <div class="flex justify-center items-center gap-2 font-bold text-sm">
-                  <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ B ]</div> <span class="text-[#BA6A4C]">VS.</span> <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ C ]</div>
-                </div>
-                <div class="flex justify-center items-center gap-2 font-bold text-sm">
-                  <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ C ]</div> <span class="text-[#BA6A4C]">VS.</span> <div class="border-2 border-black bg-white px-2 py-1 w-20 text-center">[ A ]</div>
-                </div>
-              </div>
+              <div id="br-g8-match" class="text-center font-bold text-[#BA6A4C] text-sm mt-4 tracking-widest">A vs B | B vs C | C vs A</div>
             </div>
-            <!-- Kolom Rank -->
             <div class="w-1/3 pl-4 flex flex-col justify-center font-bold text-lg">
-  <h4 class="text-center font-black mb-2 uppercase text-[#7B2525]">RANK</h4>
-  <div class="mb-1">1. <span class="border-b-2 border-black inline-block px-2 text-[#BA6A4C]">7B Indrakila</span></div>
-  <div class="mb-1">2. <span class="border-b-2 border-black inline-block px-2">7C Inerie</span></div>
-  <div>3. <span class="border-b-2 border-black inline-block px-2 text-gray-500">7A Imogiri</span></div>
-</div>
+              <h4 class="text-center font-black mb-2 uppercase text-[#7B2525]">RANK</h4>
+              <div class="mb-1">1. <span id="br-g8-r1" class="border-b-2 border-black inline-block px-2 text-[#BA6A4C]">-</span></div>
+              <div class="mb-1">2. <span id="br-g8-r2" class="border-b-2 border-black inline-block px-2">-</span></div>
+              <div>3. <span id="br-g8-r3" class="border-b-2 border-black inline-block px-2 text-gray-500">-</span></div>
+            </div>
           </div>
 
         </div>
 
-        <!-- ================= BAGIAN KANAN: SEMIFINAL & FINAL ================= -->
         <div class="w-full xl:w-3/5 min-w-[600px]">
           <h3 class="text-3xl font-extrabold text-[#7B2525] mb-6 tracking-wide">SEMI FINAL</h3>
           
           <div class="flex items-stretch justify-start gap-4 font-bold text-sm relative">
             
-            <!-- KOLOM 1: SEMIFINAL (M1 & M2) -->
             <div class="flex flex-col justify-around gap-16 w-48">
-              <!-- M1 -->
               <div>
                 <div class="text-[#BA6A4C] mb-1">M1</div>
                 <div class="border-4 border-black bg-white p-3 scrapbook-shadow">
-                  <div class="border-b-2 border-gray-300 pb-1 mb-1">RANK 1 GROUP 7</div>
-                  <div>RANK 2 GROUP 8</div>
+                  <div id="br-m1-p1" class="border-b-2 border-gray-300 pb-1 mb-1">RANK 1 G7</div>
+                  <div id="br-m1-p2">RANK 2 G8</div>
                 </div>
               </div>
-              <!-- M2 -->
               <div>
                 <div class="text-[#BA6A4C] mb-1">M2</div>
                 <div class="border-4 border-black bg-white p-3 scrapbook-shadow">
-                  <div class="border-b-2 border-gray-300 pb-1 mb-1">RANK 1 GROUP 8</div>
-                  <div>RANK 2 GROUP 7</div>
+                  <div id="br-m2-p1" class="border-b-2 border-gray-300 pb-1 mb-1">RANK 1 G8</div>
+                  <div id="br-m2-p2">RANK 2 G7</div>
                 </div>
               </div>
             </div>
 
-            <!-- ARROWS CONNECTORS -->
-          <div class="hidden xl:flex flex-col justify-center gap-[140px] text-3xl text-[#BA6A4C] px-2">
+            <div class="hidden xl:flex flex-col justify-center gap-[140px] text-3xl text-[#BA6A4C] px-2">
               <div class="-mt-16">➡️</div>
               <div class="-mb-16">➡️</div>
             </div>
 
-            <!-- KOLOM 2: FINAL (M3) & 3RD PLACE (M4) -->
             <div class="flex flex-col justify-between gap-8 w-48 py-8">
-              <!-- M3 (FINAL) -->
               <div>
                 <div class="text-[#7B2525] mb-1 font-extrabold">M3 (GRAND FINAL)</div>
                 <div class="border-4 border-[#7B2525] bg-white p-3 scrapbook-shadow scale-105">
-                  <div class="border-b-2 border-gray-300 pb-1 mb-1">WINNER M1</div>
-                  <div>WINNER M2</div>
+                  <div id="br-m3-p1" class="border-b-2 border-gray-300 pb-1 mb-1">WINNER M1</div>
+                  <div id="br-m3-p2">WINNER M2</div>
                 </div>
               </div>
 
-              <!-- M4 (3RD PLACE) -->
               <div id="bronze-match" class="mt-auto">
                 <div class="text-gray-500 mb-1">M4 (3RD PLACE)</div>
                 <div class="border-4 border-dashed border-gray-500 bg-gray-100 p-3 scrapbook-shadow opacity-90">
-                  <div class="border-b-2 border-gray-300 pb-1 mb-1">LOSER M1</div>
-                  <div>LOSER M2</div>
+                  <div id="br-m4-p1" class="border-b-2 border-gray-300 pb-1 mb-1">LOSER M1</div>
+                  <div id="br-m4-p2">LOSER M2</div>
                 </div>
               </div>
             </div>
 
-            <!-- ARROWS TO CHAMPION & 3RD -->
             <div class="flex flex-col justify-between text-2xl text-[#BA6A4C] pt-16 pb-12">
               <div>➡️</div>
               <div class="bronze-arrow">➡️</div>
             </div>
 
-            <!-- KOLOM 3: CHAMPION & 3RD WINNER BOX -->
             <div class="flex flex-col justify-between w-40 pt-14 pb-8">
-              <!-- CHAMPION BOX -->
               <div class="border-4 border-[#BA6A4C] bg-[#EEE0CC] p-4 text-center scrapbook-shadow scale-110 mt-2">
                 <div class="text-xs text-[#7B2525] mb-1 uppercase tracking-widest">👑 Champion</div>
-                <div class="text-lg font-black uppercase">[ TBD ]</div>
+                <div id="br-champ" class="text-lg font-black uppercase">[ TBD ]</div>
               </div>
 
-              <!-- 3RD PLACE WINNER BOX -->
               <div class="bronze-winner border-4 border-gray-500 bg-gray-200 p-4 text-center scrapbook-shadow mt-auto mb-2">
                 <div class="text-xs text-gray-600 mb-1 uppercase">🥉 3rd Place</div>
-                <div class="text-base font-black uppercase">[ TBD ]</div>
+                <div id="br-3rd" class="text-base font-black uppercase">[ TBD ]</div>
               </div>
             </div>
 
@@ -208,7 +167,6 @@
 
       </div>
     </section>
-
    <section id="tab-rules" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl mx-auto">
       
       <div class="bg-white p-6 border-4 border-[#607456] scrapbook-shadow relative">
