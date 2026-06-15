@@ -262,7 +262,7 @@ function startPolaroidSlideshow() {
 }
 // --- LOGIC GANTI CABOR DI TAB BRACKET ---
 function switchBracket(sport) {
-  // 1. Ganti style tombol yang lagi aktif
+  // 1. Ganti style tombol
   document.querySelectorAll('.bracket-btn').forEach(el => {
     el.classList.remove('text-[#7B2525]', 'underline', 'decoration-4', 'underline-offset-8');
     el.classList.add('text-[#607456]');
@@ -271,13 +271,20 @@ function switchBracket(sport) {
   event.target.classList.remove('text-[#607456]');
   
   // 2. Ganti Judul Utama
-  document.getElementById('bracket-title').innerText = `${sport.toUpperCase()} STAGE`;
+  document.getElementById('bracket-title').innerText = `BRACKET ${sport.toUpperCase()}`;
 
-  // 3. Logic Nyembunyiin Juara 3 (Kasti & Voli ga dapet!)
+  // 3. Hide/Show Juara 3 (Kasti & Voli ga dapet!)
   const bronzeMatch = document.getElementById('bronze-match');
+  const bronzeArrow = document.querySelector('.bronze-arrow');
+  const bronzeWinner = document.querySelector('.bronze-winner');
+  
   if (sport.toUpperCase() === 'FUTSAL' || sport.toUpperCase() === 'MLBB') {
-    bronzeMatch.classList.remove('hidden');
+    if (bronzeMatch) bronzeMatch.classList.remove('hidden');
+    if (bronzeArrow) bronzeArrow.classList.remove('hidden');
+    if (bronzeWinner) bronzeWinner.classList.remove('hidden');
   } else {
-    bronzeMatch.classList.add('hidden');
+    if (bronzeMatch) bronzeMatch.classList.add('hidden');
+    if (bronzeArrow) bronzeArrow.classList.add('hidden');
+    if (bronzeWinner) bronzeWinner.classList.add('hidden');
   }
 }
