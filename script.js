@@ -285,21 +285,54 @@ function switchBracket(sport) {
     document.getElementById('br-3rd').innerText = data.third;
   }
 }
+// --- JADWAL POPUP (VERSI REAL-TIME HARI INI) ---
 function showSchedule(sport) {
-  document.getElementById('schedule-title').innerText = `Jadwal ${sport}`;
+  
+  // 1. Tarik tanggal asli hari ini dari sistem
+  const today = new Date();
+  const dateString = today.toLocaleDateString('id-ID', {
+    day: '2-digit', month: '2-digit', year: 'numeric'
+  }); // Hasilnya bakal persis "17/06/2026"
+
+  // UBAH JUDUL POPUP JADI ADA TANGGALNYA
+  document.getElementById('schedule-title').innerText = `${sport} (${dateString})`;
+  
   const list = document.getElementById('schedule-list');
   list.innerHTML = '';
   
-  const schedules = mockData.SCHEDULE_POPUP ? mockData.SCHEDULE_POPUP.filter(s => s['Cabang Lomba'] && s['Cabang Lomba'].toString().trim().toLowerCase() === sport.toLowerCase()) : [];
+  // 2. Filter data dari satelit OSIS
+  const schedules = mockData.SCHEDULE_POPUP ? mockData.SCHEDULE_POPUP.filter(s => {
+    // Cocokin cabornya
+    const isSportMatch = s['Cabang Lomba'] && s['Cabang Lomba'].toString().trim().toLowerCase() === sport.toLowerCase();
+    // Cocokin tanggalnya sama hari ini ("17/06/2026")
+    const isDateMatch = s['Tanggal'] && s['Tanggal'].toString().trim() === dateString;
+    return isSportMatch && isDateMatch;
+  }) : [];
   
+  // 3. Nampilin ke layar
   if(schedules.length > 0) {
     schedules.forEach(sch => {
-      list.innerHTML += `<li class="border-b border-gray-200 py-2">⏰ <b>${sch['Waktu']}</b><br><span class="text-[#BA6A4C] font-bold">${sch['Matchup (Tim A vs Tim B)']}</span></li>`;
+      // Pastiin kolomnya bernama 'Jam' di Google Sheets
+      if(sch['Jam'] && sch['Matchup (Tim A vs Tim B)'] && sch['Jam'].toString().trim() !== '') {
+        list.innerHTML += `
+          <li class="border-b border-[#EEE0CC] py-3">
+            ⏰ <b class="text-[#607456]">${sch['Jam']}</b><br>
+            <span class="text-[#BA6A4C] font-extrabold text-lg tracking-wide">${sch['Matchup (Tim A vs Tim B)']}</span>
+          </li>
+        `;
+      }
     });
   } else {
-    list.innerHTML = `<li>Belum ada jadwal hari ini.</li>`;
+    // Kalo kosong
+    list.innerHTML = `
+      <li class="text-gray-500 italic text-center py-4">
+        Belum ada jadwal tanding untuk hari ini. <br> 
+        <span class="text-sm">Silakan cek lagi besok! 🏕️</span>
+      </li>
+    `;
   }
 
+  // Munculin Animasi Modal
   const modal = document.getElementById('schedule-modal');
   modal.classList.remove('hidden');
   modal.classList.add('flex');
